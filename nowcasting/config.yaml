@@ -1,0 +1,54 @@
+# All series use free FRED CSV endpoints (no API key required).
+# release_lag_weeks is an approximation of data availability to avoid look-ahead bias.
+series:
+  CPIAUCSL:
+    description: CPI all items, seasonally adjusted (monthly index)
+    role: target
+    transform: yoy
+    release_lag_weeks: 2
+  PPIACO:
+    description: Producer Price Index: All Commodities (monthly)
+    role: feature
+    transform: yoy
+    release_lag_weeks: 2
+  CUSR0000SA0L1E:
+    description: CPI less food and energy (monthly)
+    role: feature
+    transform: yoy
+    release_lag_weeks: 2
+  MICH:
+    description: University of Michigan inflation expectations (monthly)
+    role: feature
+    transform: level
+    release_lag_weeks: 1
+  T10YIE:
+    description: 10-Year Breakeven Inflation Rate (daily)
+    role: feature
+    transform: level
+    release_lag_weeks: 0
+  DCOILWTICO:
+    description: WTI crude oil price (daily)
+    role: feature
+    transform: pct_change_4w
+    release_lag_weeks: 0
+  UNRATE:
+    description: Unemployment rate (monthly)
+    role: feature
+    transform: level
+    release_lag_weeks: 1
+
+model:
+  n_estimators: 800
+  max_depth: 10
+  min_samples_leaf: 4
+  random_state: 42
+
+training:
+  min_train_weeks: 104
+  test_weeks: 52
+  resample_frequency: W-FRI
+
+output:
+  data_dir: data
+  predictions_file: data/weekly_inflation_nowcast.csv
+  metrics_file: data/model_metrics.json
